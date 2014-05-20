@@ -1,0 +1,13 @@
+# Read about fixtures at http://api.rubyonrails.org/classes/ActiveRecord/Fixtures.html
+
+one:
+  group: MyString
+  forecast1: MyString
+  forecast2: MyString
+  user_id: 1
+
+two:
+  group: MyString
+  forecast1: MyString
+  forecast2: MyString
+  user_id: 1

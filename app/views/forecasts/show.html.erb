@@ -1,0 +1,24 @@
+<p id="notice"><%= notice %></p>
+
+<p>
+  <strong>Group:</strong>
+  <%= @forecast.group %>
+</p>
+
+<p>
+  <strong>Forecast1:</strong>
+  <%= @forecast.forecast1 %>
+</p>
+
+<p>
+  <strong>Forecast2:</strong>
+  <%= @forecast.forecast2 %>
+</p>
+
+<p>
+  <strong>User:</strong>
+  <%= @forecast.user_id %>
+</p>
+
+<%= link_to 'Edit', edit_forecast_path(@forecast) %> |
+<%= link_to 'Back', forecasts_path %>
