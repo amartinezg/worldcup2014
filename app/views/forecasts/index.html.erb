@@ -1,33 +1,35 @@
 <h1>Listing forecasts</h1>
 
-<table>
-  <thead>
-    <tr>
-      <th>Group</th>
-      <th>Forecast1</th>
-      <th>Forecast2</th>
-      <th>User</th>
-      <th></th>
-      <th></th>
-      <th></th>
-    </tr>
-  </thead>
-
-  <tbody>
-    <% @forecasts.each do |forecast| %>
+<div class="well well-sm">
+  <table class="table table-striped table-hover ">
+    <thead>
       <tr>
-        <td><%= forecast.group %></td>
-        <td><%= forecast.forecast1 %></td>
-        <td><%= forecast.forecast2 %></td>
-        <td><%= forecast.user_id %></td>
-        <td><%= link_to 'Show', forecast %></td>
-        <td><%= link_to 'Edit', edit_forecast_path(forecast) %></td>
-        <td><%= link_to 'Destroy', forecast, method: :delete, data: { confirm: 'Are you sure?' } %></td>
+        <th>#</th>
+        <th>Nombre</th>
+        <th>Camp - Subc</th>
+        <th>Terc - Cuar</th>
+        <th>Grupo A</th>
+        <th>Grupo B</th>
+        <th>Grupo C</th>
+        <th>Grupo D</th>
+        <th>Grupo E</th>
+        <th>Grupo F</th>
+        <th>Grupo G</th>
+        <th>Grupo H</th>
       </tr>
-    <% end %>
-  </tbody>
-</table>
+    </thead>
 
-<br>
-
-<%= link_to 'New Forecast', new_forecast_path %>
+    <tbody>
+      <% @forecasts.in_groups_of(10) do |forecast| %>
+        <tr>
+          <td><%= forecast.first.user_id %></td>
+          <td><%= forecast.first.user.name %></td>
+          <% forecast.each_with_index do |f,i|%>
+            <td><%= f.group.to_i != 0 ? image_tag(f.forecast1.downcase+".png") : f.forecast1.to_s+" -"%> 
+            <%= f.group.to_i != 0 ? image_tag(f.forecast2.downcase+".png") : f.forecast2 %></td>
+          <% end %>
+        </tr>
+      <% end %>
+    </tbody>
+  </table>
+</div>
