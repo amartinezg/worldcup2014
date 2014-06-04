@@ -3,7 +3,7 @@ class Score < ActiveRecord::Base
 	belongs_to :forecast
 
   def self.calculate_results_per_day
-  	response = HTTParty.get('http://footballdb.herokuapp.com/api/v1/event/world.2014/round/15')
+  	response = HTTParty.get('http://footballdb.herokuapp.com/api/v1/event/world.2014/round/9')
 
 	Rails.logger.info("----------------------------------------------")
 	logger.debug "----------------------------------------------"
