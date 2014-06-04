@@ -1,10 +1,11 @@
 Worldcup2014::Application.routes.draw do
-  get "results/index"
-  resources :scores
-
+  get 'results', to: 'results#index'
+  
   resources :forecasts
 
-  resources :users
+  resources :users do
+    resources :scores
+  end
 
   # The priority is based upon order of creation: first created -> highest priority.
   # See how all your routes lay out with "rake routes".

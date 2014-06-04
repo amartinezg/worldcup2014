@@ -1,4 +1,4 @@
-<h1>Listing scores</h1>
+<h1>Y quién va ganando?</h1>
 
 <div class="well">
   <table class="table table-striped table-hover ">
@@ -9,16 +9,15 @@
         <th>Points</th>
       </tr>
     </thead>
-
     <tbody>
-    	<% i=1 %>
-      <% @results.each do |r| %>
-        <tr class=<%= "success" if i==1%>>
-          <td><%= i %></td>
-          <td><%= User.find(r[:id]).name %></td>
+      <% @results.each_with_index do |r,i| %>
+        <tr class=<%= "success" if i==0%>>
+
+          <% @user = User.find(r[:id]) %>
+          <td><%= i+1 %></td>
+          <td><%= link_to "#{@user.name}", user_scores_path(@user)  %></td>
           <td><%= r[:Points] %></td>
         </tr>
-        	<% i+=1 %>
       <% end %>
     </tbody>
   </table>

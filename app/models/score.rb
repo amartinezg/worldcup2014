@@ -63,4 +63,8 @@ class Score < ActiveRecord::Base
 			end
 		end
 	end
+
+	def self.grab_sum_per_user(user_id)
+		Score.where(user_id: user_id).sum(:points)
+	end
 end

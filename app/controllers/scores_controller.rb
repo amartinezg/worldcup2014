@@ -4,9 +4,7 @@ class ScoresController < ApplicationController
   # GET /scores
   # GET /scores.json
   def index
-    @scores = Score.all
-
-    Score.calculate_results_per_day
+    @scores = User.find(params[:user_id]).scores
   end
 
   # GET /scores/1

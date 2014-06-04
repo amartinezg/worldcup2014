@@ -1,33 +1,29 @@
-<h1>Listing scores</h1>
+<div class='col-lg-6'>
+  <h1>Resultados de <%=@scores.first.user.name.capitalize%></h1> 
+</div>
+<div class='col-lg-6'>
+  <h3><%= link_to "Volver", results_path  %></h3> 
+</div>
 
-<table class="table table-striped table-hover ">
-  <thead>
-    <tr>
-      <th>Points</th>
-      <th>Reason</th>
-      <th>User</th>
-      <th>Forecast</th>
-      <th></th>
-      <th></th>
-      <th></th>
-    </tr>
-  </thead>
-
-  <tbody>
-    <% @scores.each do |score| %>
-      <tr >
-        <td><%= score.points %></td>
-        <td><%= score.reason %></td>
-        <td><%= score.user_id %></td>
-        <td><%= score.forecast_id %></td>
-        <td><%= link_to 'Show', score %></td>
-        <td><%= link_to 'Edit', edit_score_path(score) %></td>
-        <td><%= link_to 'Destroy', score, method: :delete, data: { confirm: 'Are you sure?' } %></td>
+<div class="well">
+  <table class="table table-striped table-hover ">
+    <thead>
+      <tr>
+        <th>Puntos</th>
+        <th>Comentario</th>
+        <th>Predicción</th>
       </tr>
-    <% end %>
-  </tbody>
-</table>
+    </thead>
 
-<br>
-
-<%= link_to 'New Score', new_score_path %>
+    <tbody>
+      <% @scores.each do |score| %>
+        <tr >
+          <td><%= score.points %></td>
+          <td><%= score.reason %></td>
+          <td><%= "#{score.forecast.forecast1} - #{score.forecast.forecast2}"%></td>
+        </tr>
+      <% end %>
+    </tbody>
+  </table>   
+  <h2> <p>Total Puntos: <strong><%= Score.grab_sum_per_user(@scores.first.user_id)%></strong></p></h2>   
+</div>
