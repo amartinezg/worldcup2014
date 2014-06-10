@@ -18,7 +18,7 @@
     <tbody>
       <% @scores.each do |score| %>
         <tr >
-          <td><%= score.points %></td>
+          <td><span class="<%= 'badge' if score.points.to_i > 0%>"><%= score.points %></span></td>
           <td><%= score.reason %></td>
           <td><%= "#{score.forecast.forecast1} - #{score.forecast.forecast2}"%></td>
         </tr>
