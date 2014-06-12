@@ -3,15 +3,14 @@ class Score < ActiveRecord::Base
 	belongs_to :forecast
 
   def self.calculate_results_per_day
-  	response = HTTParty.get('http://footballdb.herokuapp.com/api/v1/event/world.2014/round/9')
+  	response = HTTParty.get('http://footballdb.herokuapp.com/api/v1/event/world.2014/round/1')
 
-	Rails.logger.info("----------------------------------------------")
 	logger.debug "----------------------------------------------"
   	@round = response.to_hash["round"]["pos"]
   	if(@round<=15||@round==19||@round==20)
 	  	response.to_hash["games"].each { |game| 
-	  		game["score1"] = @round<=15 ? rand(4).to_i : Setup.first.groups[Array.new(1){[*'A'..'H'].sample}.join][rand(4).to_i]
-			game["score2"] = @round<=15 ? rand(4).to_i : Setup.first.groups[Array.new(1){[*'A'..'H'].sample}.join][rand(4).to_i]
+	  		#game["score1"] = @round<=15 ? rand(4).to_i : Setup.first.groups[Array.new(1){[*'A'..'H'].sample}.join][rand(4).to_i]
+			#game["score2"] = @round<=15 ? rand(4).to_i : Setup.first.groups[Array.new(1){[*'A'..'H'].sample}.join][rand(4).to_i]
 
 			if @round<=15
 	  			@group = Setup.groups.select{|k,v| v.include?(game["team1_code"])}.each_key.peek
@@ -21,14 +20,10 @@ class Score < ActiveRecord::Base
 	  			@group = "20"
 	  		end
 
-	  		
-
-	  		logger.debug "Grupo elegido: #{@group}"
 	  		@forecasts = Forecast.all.where(group: "#{@group}")
 
 	  		logger.debug "Group: #{@group} -> Team 1: #{game["team1_title"]} Team 2: #{game["team2_title"]}. Result: #{game["score1"]} - #{game["score2"]}"
 
-	  		Rails.logger.info("----------------------------------------------")
 	  		@forecasts.each do |f|
 	  			Rails.logger.info("#{f.user.name}: #{f.forecast1} - #{f.forecast2}")
 
@@ -44,25 +39,24 @@ class Score < ActiveRecord::Base
 	  			@score.user_id = f.user_id
 	  			@score.forecast_id = f.id
 	  			@score.points = @points
-	  			@score.reason = "Points got for match #{game["team1_title"]} vs #{game["team2_title"]}: #{@points}."
+	  			@score.reason = "Puntos obtenidos en el partido: #{game["team1_title"]} vs #{game["team2_title"]}: #{@points}."
 	  			@score.save
 			end
 	  	}
-	    Rails.logger.info("----------Testing Crono #{Time.now}--------------")
 	  end
 	end
 
-	if(@round==20)
-		Forecast.where(group: [19,20]).order("user_id").in_groups_of(2) do |forecast|
-			forecast.each do |f|
-				teams << f.forecast1 << f.forecast2 if f.scores.first.points == 0
-			end
-
-			if(teams.size==4) 
-				
-			end
-		end
-	end
+#	if(@round==20)
+#		Forecast.where(group: [19,20]).order("user_id").in_groups_of(2) do |forecast|
+#			forecast.each do |f|
+#				teams << f.forecast1 << f.forecast2 if f.scores.first.points == 0
+#			end
+#
+#			if(teams.size==4) 
+#				
+#			end
+#		end
+#	end
 
 	def self.grab_sum_per_user(user_id)
 		Score.where(user_id: user_id).sum(:points)
