@@ -25,5 +25,5 @@
       <% end %>
     </tbody>
   </table>   
-  <h2> <p>Total Puntos: <strong><%= Score.grab_sum_per_user(@scores.first.user_id)%></strong></p></h2>   
+  <h2> <p>Total Puntos: <strong><%= @scores.blank? ? 0 : Score.grab_sum_per_user(@scores.first.user_id)%></strong></p></h2>   
 </div>
