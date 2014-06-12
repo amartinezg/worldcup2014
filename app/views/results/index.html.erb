@@ -10,13 +10,11 @@
       </tr>
     </thead>
     <tbody>
-      <% @results.each_with_index do |r,i| %>
+      <% @results.each_with_index do |user,i| %>
         <tr class=<%= "success" if i==0%>>
-
-          <% @user = User.find(r[:id]) %>
           <td><%= i+1 %></td>
-          <td><%= link_to "#{@user.name}", user_scores_path(@user)  %></td>
-          <td><%= r[:Points] %></td>
+          <td><%= link_to "#{user.name}", user_scores_path(user)  %></td>
+          <td><%= user.score_sum %></td>
         </tr>
       <% end %>
     </tbody>

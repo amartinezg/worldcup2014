@@ -32,7 +32,7 @@ class Score < ActiveRecord::Base
 	  		@forecasts.each do |f|
 	  			Rails.logger.info("#{f.user.name}: #{f.forecast1} - #{f.forecast2}")
 
-	  			if @round<=15
+	  		  	if @round<=15
 	  				@points = game["score1"]==f.forecast1.to_i && game["score2"]==f.forecast2.to_i ? 5 : game["score1"]==f.forecast2.to_i && game["score2"]==f.forecast1.to_i ? 2 : 0
 	  			elsif @round==19
 	  				@points = game["score1"]==f.forecast1.to_s && game["score2"]==f.forecast2.to_s ? 18 : game["score1"]==f.forecast1.to_s ? 10 : game["score2"]==f.forecast2.to_s ? 8 : 0

@@ -4,10 +4,6 @@ class User < ActiveRecord::Base
 
 	attr_accessible :name, :mail
 
-	def self.users_results
-		User.joins(:scores).select("users.id, SUM(scores.points) as Points").group("users.id").order("Points desc")
-	end
-
 	def self.prepare_mail
 		@results = self.users_results
 
@@ -20,5 +16,9 @@ class User < ActiveRecord::Base
 
 			UserMailer.send_results(@user,i+1,r[:Points]).deliver unless @user.mail.blank?
 		end
+	end
+
+	def score_sum
+		scores.sum(:points)
 	end
 end
