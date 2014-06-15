@@ -53,7 +53,7 @@ class Score < ActiveRecord::Base
 				end
 			end
 			game.update(processed: true)
-			#User.prepare_mail
+			User.prepare_mail
 		end
 	end
 
