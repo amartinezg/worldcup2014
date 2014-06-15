@@ -2,63 +2,70 @@ class Score < ActiveRecord::Base
 	belongs_to :user
 	belongs_to :forecast
 
-  def self.calculate_results_per_day
-  	response = HTTParty.get('http://footballdb.herokuapp.com/api/v1/event/world.2014/round/1')
+	attr_accessible :user_id, :forecast_id, :points, :reason
 
-	logger.debug "----------------------------------------------"
-  	@round = response.to_hash["round"]["pos"]
-  	if(@round<=15||@round==19||@round==20)
-	  	response.to_hash["games"].each { |game| 
-	  		#game["score1"] = @round<=15 ? rand(4).to_i : Setup.first.groups[Array.new(1){[*'A'..'H'].sample}.join][rand(4).to_i]
-			#game["score2"] = @round<=15 ? rand(4).to_i : Setup.first.groups[Array.new(1){[*'A'..'H'].sample}.join][rand(4).to_i]
+	def self.calculate_results_per_day(date)
 
-			if @round<=15
-	  			@group = Setup.groups.select{|k,v| v.include?(game["team1_code"])}.each_key.peek
-	  		elsif @round==19
-	  			@group = "19"
-	  		else
-	  			@group = "20"
-	  		end
+		games = Game.get_games_per_day(date)
 
-	  		@forecasts = Forecast.all.where(group: "#{@group}")
+		games.each do |game|
+			
+			Rails.logger.info("#{game["team1"]} vs #{game["team2"]}: #{game["score1"]} - #{game["score2"]}")
 
-	  		logger.debug "Group: #{@group} -> Team 1: #{game["team1_title"]} Team 2: #{game["team2_title"]}. Result: #{game["score1"]} - #{game["score2"]}"
+			@group = Setup.groups.select{|k,v| v.include?(game["team1"])}.each_key.peek
 
-	  		@forecasts.each do |f|
-	  			Rails.logger.info("#{f.user.name}: #{f.forecast1} - #{f.forecast2}")
+			@forecasts = game.round <= 15 ? Forecast.all.where(group: "#{@group}") : game.round
 
-	  		  	if @round<=15
-	  				@points = game["score1"]==f.forecast1.to_i && game["score2"]==f.forecast2.to_i ? 5 : game["score1"]==f.forecast2.to_i && game["score2"]==f.forecast1.to_i ? 2 : 0
-	  			elsif @round==19
-	  				@points = game["score1"]==f.forecast1.to_s && game["score2"]==f.forecast2.to_s ? 18 : game["score1"]==f.forecast1.to_s ? 10 : game["score2"]==f.forecast2.to_s ? 8 : 0
-	  			else
-	  				@points = game["score1"]==f.forecast1.to_s && game["score2"]==f.forecast2.to_s ? 27 : game["score1"]==f.forecast1.to_s ? 15 : game["score2"]==f.forecast2.to_s ? 12 : 0
-	  			end
+			@forecasts.each do |f|
+	  		if game.round <= 15
+		  		forecast_winner = find_winner(f.forecast1.to_i,f.forecast2.to_i)
+		  		result_winner = game.result.to_s
 
-	  			@score = Score.new
-	  			@score.user_id = f.user_id
-	  			@score.forecast_id = f.id
-	  			@score.points = @points
-	  			@score.reason = "Puntos obtenidos en el partido: #{game["team1_title"]} vs #{game["team2_title"]}: #{@points}."
-	  			@score.save
+					@points = game["score1"]==f.forecast1 && game["score2"]==f.forecast2 ? 5 : (forecast_winner==result_winner ? 2 : 0)
+					@reason = "Partido: #{game["team1"]} vs #{game["team2"]}. Resultado: #{game["score1"]} - #{game["score2"]}"
+				elsif game.round == 19
+					@points = Setup.finalists[2]==f.forecast1.to_s ? 10 : 0
+					@points += Setup.finalists[3]==f.forecast2.to_s ? 8 : 0
+					@reason = "Partido: #{game["team1"]} vs #{game["team2"]}. Tercero: #{Setup.finalists[2]}. Cuarto: #{Setup.finalists[3]}"
+				else
+					@points = Setup.finalists[0]==f.forecast1.to_s ? 15 : 0
+					@points += Setup.finalists[1]==f.forecast2.to_s ? 12 : 0
+					@reason = "Partido: #{game["team1"]} vs #{game["team2"]}. Campeón: #{Setup.finalists[0]}. SubCampeón: #{Setup.finalists[1]}"
+				end
+
+				Rails.logger.info("#{f.user.name}: #{f.forecast1} - #{f.forecast2}. Points: #{@points}")
+
+				Score.create(:user_id => f.user_id, :forecast_id => f.id, :points => @points, 
+					:reason => @reason)
+
+				if(game.round == 20 && sum_last_two_matches(f.user_id)==0)
+					last_two_forecasts = Forecast.where(group: [19,20], user_id: f.user_id)
+
+					@points = Setup.finalists.include?(last_two_forecasts.first.forecast1) ? 5 : 0
+					@points += Setup.finalists.include?(last_two_forecasts.first.forecast2) ? 5 : 0
+					@points += Setup.finalists.include?(last_two_forecasts.last.forecast1) ? 5 : 0
+					@points += Setup.finalists.include?(last_two_forecasts.last.forecast2) ? 5 : 0
+
+					@reason = "Total puntos obtenidos por Campeón - SubCampeón - 3ro y 4to"
+
+					Score.create(:user_id => f.user_id, :forecast_id => f.id, :points => @points, 
+					:reason => @reason)
+				end
 			end
-	  	}
-	  end
+			game.update(processed: true)
+			#User.prepare_mail
+		end
 	end
 
-#	if(@round==20)
-#		Forecast.where(group: [19,20]).order("user_id").in_groups_of(2) do |forecast|
-#			forecast.each do |f|
-#				teams << f.forecast1 << f.forecast2 if f.scores.first.points == 0
-#			end
-#
-#			if(teams.size==4) 
-#				
-#			end
-#		end
-#	end
+	def self.find_winner(score1,score2)
+		(score1==score2) ? 'D' : ((score1>score2) ? 'L' : 'V')
+	end
 
 	def self.grab_sum_per_user(user_id)
 		Score.where(user_id: user_id).sum(:points)
+	end
+
+	def self.sum_last_two_matches(user)
+		Score.where(created_at: (Time.now.midnight - 1.day)..Time.now, user_id: user).sum(:points)
 	end
 end

@@ -1,0 +1,19 @@
+# Read about fixtures at http://api.rubyonrails.org/classes/ActiveRecord/Fixtures.html
+
+one:
+  team1: MyString
+  team2: MyString
+  play_at: 2014-06-13
+  score1: MyString
+  score2: MyString
+  result: MyString
+  processed: false
+
+two:
+  team1: MyString
+  team2: MyString
+  play_at: 2014-06-13
+  score1: MyString
+  score2: MyString
+  result: MyString
+  processed: false

@@ -5,16 +5,11 @@ class User < ActiveRecord::Base
 	attr_accessible :name, :mail
 
 	def self.prepare_mail
-		@results = self.users_results
+		@user = User.all.sort_by(&:score_sum).reverse
 
-		@results.each_with_index do |r,i|
-
-			@user = User.find(r[:id])
-
-
-			logger.debug "Procesando a #{@user.name} - mail: #{@user.mail}"
-
-			UserMailer.send_results(@user,i+1,r[:Points]).deliver unless @user.mail.blank?
+		@user.each_with_index do |u,i|
+			logger.debug "Procesando a #{u.name} - mail: #{u.mail}"
+			UserMailer.send_results(u,i+1,u.score_sum).deliver unless u.mail.blank?
 		end
 	end
 

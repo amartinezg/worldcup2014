@@ -7,6 +7,28 @@
 #   Mayor.create(name: 'Emanuel', city: cities.first)
 
 # Setup.delete_all
+require 'httparty'
+
+
+
+Game.delete_all
+(1..15).each  do |x|
+	response = HTTParty.get("http://footballdb.herokuapp.com/api/v1/event/world.2014/round/#{x}")
+
+  response.to_hash["games"].each do |game| 
+  	puts "--------------------------------------"
+  	puts game
+
+  	Game.create(:team1 => game["team1_code"].to_s, :team2 => game["team2_code"].to_s, 
+  		:play_at => game["play_at"], :score1 => nil, :score2 => nil, :result => nil, 
+  		:processed => false, :round => x)
+  end
+end
+
+Score.delete_all
+Setup.delete_all
+
+
 Setup.create(:groups => {'A'=>["BRA","CRO","MEX","CMR"],
 						'B'=>["ESP","NED","CHI","AUS"],
 						'C'=>["COL","GRE","CIV","JPN"],
@@ -14,8 +36,9 @@ Setup.create(:groups => {'A'=>["BRA","CRO","MEX","CMR"],
 						'E'=>["SUI","ECU","FRA","HON"],
 						'F'=>["ARG","BIH","IRN","NGA"],
 						'G'=>["GER","POR","GHA","USA"],
-						'H'=>["BEL","ALG","RUS","KOR"]})
+						'H'=>["BEL","ALG","RUS","KOR"]},:finalists => [])
 
+=begin
 User.delete_all
 Score.delete_all
 Forecast.delete_all
@@ -271,4 +294,5 @@ Forecast.create(:user_id => 21, :group => 'D', :forecast1 => '3', :forecast2 => 
 Forecast.create(:user_id => 21, :group => 'E', :forecast1 => '1', :forecast2 => '0')
 Forecast.create(:user_id => 21, :group => 'F', :forecast1 => '0', :forecast2 => '0')
 Forecast.create(:user_id => 21, :group => 'G', :forecast1 => '1', :forecast2 => '1')
-Forecast.create(:user_id => 21, :group => 'H', :forecast1 => '2', :forecast2 => '2')
+Forecast.create(:user_id => 21, :group => 'H', :forecast1 => '2', :forecast2 => '2')#
+=end
