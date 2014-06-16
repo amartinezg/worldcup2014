@@ -30,9 +30,7 @@ Worldcup2014::Application.configure do
   config.action_mailer.delivery_method = :smtp
   config.action_mailer.smtp_settings = {
     address: "smtp.mandrillapp.com",
-    port: 587,
-    user_name: "amartinez@tlm.com.co",
-    password: "uDBW1E2hNHoY-HBOMoAoMw"
+    port: 587
   }
 
   # Specify what domain to use for mailer URLs
