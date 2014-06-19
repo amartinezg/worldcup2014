@@ -7,6 +7,8 @@
 #   Mayor.create(name: 'Emanuel', city: cities.first)
 
 # Setup.delete_all
+=begin
+
 require 'httparty'
 
 
@@ -26,6 +28,7 @@ Game.delete_all
 end
 
 Score.delete_all
+=end
 Setup.delete_all
 
 
@@ -36,7 +39,16 @@ Setup.create(:groups => {'A'=>["BRA","CRO","MEX","CMR"],
 						'E'=>["SUI","ECU","FRA","HON"],
 						'F'=>["ARG","BIH","IRN","NGA"],
 						'G'=>["GER","POR","GHA","USA"],
-						'H'=>["BEL","ALG","RUS","KOR"]},:finalists => [])
+						'H'=>["BEL","ALG","RUS","KOR"]},
+						:finalists => [],
+						:teams => {'BRA'=>"Brasil",'CRO'=>"Croacia",'MEX'=>"Mexico",'CMR'=>"Camerun",
+							'ESP'=>"Espana",'NED'=>"Paises Bajos",'CHI'=>"Chile",'AUS'=>"Australia",
+							'COL'=>"Colombia",'GRE'=>"Grecia",'CIV'=>"Costa de Marfil",'JPN'=>"Japon",
+							'URU'=>"Uruguay",'CRC'=>"Costa Rica",'ENG'=>"Inglaterra",'ITA'=>"Italia",
+							'SUI'=>"Suiza",'ECU'=>"Ecuador",'FRA'=>"Francia",'HON'=>"Honduras",
+							'ARG'=>"Argentina",'BIH'=>"Bosnia",'IRN'=>"Iran",'NGA'=>"Nigeria",
+							'GER'=>"Alemania",'POR'=>"Portugal",'GHA'=>"Ghana",'USA'=>"EEUU",
+							'BEL'=>"Belgica",'ALG'=>"Argelia",'RUS'=>"Rusia",'KOR'=>"Corea Del Sur"})
 
 =begin
 User.delete_all

@@ -22,15 +22,15 @@ class Score < ActiveRecord::Base
 		  		result_winner = game.result.to_s
 
 					@points = game["score1"]==f.forecast1 && game["score2"]==f.forecast2 ? 5 : (forecast_winner==result_winner ? 2 : 0)
-					@reason = "Partido: #{game["team1"]} vs #{game["team2"]}. Resultado: #{game["score1"]} - #{game["score2"]}"
+					@reason = "Partido: #{Setup.teams[game["team1"]]} vs #{Setup.teams[game["team2"]]}. Resultado: #{game["score1"]} - #{game["score2"]}"
 				elsif game.round == 19
 					@points = Setup.finalists[2]==f.forecast1.to_s ? 10 : 0
 					@points += Setup.finalists[3]==f.forecast2.to_s ? 8 : 0
-					@reason = "Partido: #{game["team1"]} vs #{game["team2"]}. Tercero: #{Setup.finalists[2]}. Cuarto: #{Setup.finalists[3]}"
+					@reason = "Partido: #{Setup.teams[game["team1"]]} vs #{Setup.teams[game["team2"]]}. Tercero: #{Setup.finalists[2]}. Cuarto: #{Setup.finalists[3]}"
 				else
 					@points = Setup.finalists[0]==f.forecast1.to_s ? 15 : 0
 					@points += Setup.finalists[1]==f.forecast2.to_s ? 12 : 0
-					@reason = "Partido: #{game["team1"]} vs #{game["team2"]}. Campeón: #{Setup.finalists[0]}. SubCampeón: #{Setup.finalists[1]}"
+					@reason = "Partido: #{Setup.teams[game["team1"]]} vs #{Setup.teams[game["team2"]]}. Campeón: #{Setup.finalists[0]}. SubCampeón: #{Setup.finalists[1]}"
 				end
 
 				Rails.logger.info("#{f.user.name}: #{f.forecast1} - #{f.forecast2}. Points: #{@points}")

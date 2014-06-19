@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <title>Worldcup2014</title>
+  <title>Polla TLM 2014</title>
   <%= stylesheet_link_tag    "application", media: "all", "data-turbolinks-track" => true %>
   <%= javascript_include_tag "application", "data-turbolinks-track" => true %>
   <%= csrf_meta_tags %>
@@ -15,15 +15,15 @@
       <span class="icon-bar"></span>
       <span class="icon-bar"></span>
     </button>
-    <a class="navbar-brand" href="/">Brazil 2014</a>
+    <a class="navbar-brand" href="/">Brasil 2014</a>
   </div>
   <div class="navbar-collapse collapse navbar-inverse-collapse">
     <ul class="nav navbar-nav">
       <li class="<%= 'active' if current_page?('/forecasts')%>">
-      	<%= link_to "Predicciones", forecasts_path  %>
+      	<%= link_to "Predicciones Polla Suerte", forecasts_path  %>
       </li>
       <li class="<%= 'active' if current_page?('/results')%>">
-      	<%= link_to "Resultados", results_path  %>
+      	<%= link_to "Resultados Polla Suerte", results_path  %>
       </li>
       <li class="<%= 'active' if current_page?('/users')%>">
       	<%= link_to "Usuarios", users_path  %>
@@ -40,10 +40,10 @@
   <div class="panel-footer">
     <div class='row'>
       <div class='col-lg-3'>
-        <%= link_to "Predicciones", forecasts_path  %>
+        <%= link_to "Predicciones Polla Suerte", forecasts_path  %>
       </div>
       <div class='col-lg-3'>
-        <%= link_to "Resultados", results_path  %>
+        <%= link_to "Resultados Polla Suerte", results_path  %>
       </div>
       <div class='col-lg-3'>
         <%= link_to "Usuarios", users_path  %>
