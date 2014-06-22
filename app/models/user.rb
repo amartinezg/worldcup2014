@@ -9,11 +9,15 @@ class User < ActiveRecord::Base
 
 		@user.each_with_index do |u,i|
 			logger.debug "Procesando a #{u.name} - mail: #{u.mail}"
-			UserMailer.send_results(u,i+1,u.score_sum).deliver unless u.mail.blank?
+			# UserMailer.send_results(u,i+1,u.score_sum).deliver unless u.mail.blank?
 		end
 	end
 
 	def score_sum
-		scores.sum(:points)
+		scores.where(:type_of_bet => 1).sum(:points)
 	end
+
+	def score_sum2
+		scores.where(:type_of_bet => 2).sum(:points)
+	end	
 end
