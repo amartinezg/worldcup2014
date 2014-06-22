@@ -14,7 +14,7 @@ class User < ActiveRecord::Base
 	end
 
 	def score_sum
-		scores.where(:type_of_bet => 1).sum(:points)
+		scores.where.sum(:points)
 	end
 
 	def score_sum2
