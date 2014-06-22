@@ -14,7 +14,7 @@ class User < ActiveRecord::Base
 	end
 
 	def score_sum
-		scores.where.sum(:points)
+		scores.sum(:points)
 	end
 
 	def score_sum2
