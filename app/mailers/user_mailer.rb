@@ -6,8 +6,9 @@ class UserMailer < ActionMailer::Base
     @pos = pos
     @points = points
     @greeting = "Hola #{@user.name}"
+    @type_of_bet = type_of_bet
  
-    mail to: @user.mail, subject: (type_of_bet ? "Ya sabes en qué posición vas en la polla de la suerte?" : "Ya sabes en qué posición vas en la polla de Excel?")
+    mail to: @user.mail, subject: (@type_of_bet ? "Ya sabes en qué posición vas en la polla de la suerte?" : "Ya sabes en qué posición vas en la polla de Excel?")
   end
 
 end
