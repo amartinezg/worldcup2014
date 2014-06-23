@@ -6,8 +6,8 @@
 
 <p>Para una correcta visualización del contenido, visualizar la página en Firefox, Chrome o Safari</p>
 
-<%= if type_of_bet %>
+<% if type_of_bet %>
 	<p><%= link_to "Resultados generales Suerte", results_url(host: "http://pollatlm.herokuapp.com")  %></p>
-<%= else %>
+<% else %>
 	<p><%= link_to "Resultados generales Excel", excel_url(host: "http://pollatlm.herokuapp.com")  %></p>
-<%= end %>
+<% end %>
