@@ -16,7 +16,7 @@ class User < ActiveRecord::Base
 
 		@user.each_with_index do |u,i|
 			logger.debug "Procesando a #{u.name} - mail: #{u.mail}"
-			#UserMailer.send_results(u,i+1,u.score_sum,type_of_bet).deliver unless u.mail.blank?
+			UserMailer.send_results(u,i+1,u.score_sum,type_of_bet).deliver unless u.mail.blank?
 		end
 	end
 
