@@ -7,6 +7,8 @@
 #   Mayor.create(name: 'Emanuel', city: cities.first)
 
 # Setup.delete_all
+
+
 =begin
 
 require 'httparty'
@@ -28,9 +30,8 @@ Game.delete_all
 end
 
 Score.delete_all
-=end
-Setup.delete_all
 
+Setup.delete_all
 
 Setup.create(:groups => {'A'=>["BRA","CRO","MEX","CMR"],
 						'B'=>["ESP","NED","CHI","AUS"],
@@ -52,8 +53,9 @@ Setup.create(:groups => {'A'=>["BRA","CRO","MEX","CMR"],
 
 =begin
 User.delete_all
+
 Score.delete_all
-Forecast.delete_all
+
 
 User.create(:name => 'LINA ZULUAGA', :mail => '')
 User.create(:name => 'ELIZABETH', :mail => '')
@@ -63,7 +65,6 @@ User.create(:name => 'LAURA', :mail => '')
 User.create(:name => 'MARTA', :mail => '')
 User.create(:name => 'MARISOL', :mail => '')
 User.create(:name => 'OLGA', :mail => '')
-User.create(:name => 'YAMILE', :mail => ')
 User.create(:name => 'YANNETH', :mail => '')
 User.create(:name => 'JOSE', :mail => '')
 User.create(:name => 'FRANCISCO', :mail => '')
@@ -76,7 +77,13 @@ User.create(:name => 'ANDRES MARTINEZ', :mail => '')
 User.create(:name => 'AUGUSTO', :mail => '')
 User.create(:name => 'JAIME', :mail => '')
 User.create(:name => 'ADRIAN', :mail => '')
+User.create(:name => 'YENCY', :mail => '')
+User.create(:name => 'LUIS', :mail => '')
+User.create(:name => 'DIANA', :mail => '')
 
+
+Forecast.delete_all
+Score.delete_all
 Forecast.create(:user_id => 1, :group => '20', :forecast1 => 'USA', :forecast2 => 'HON')
 Forecast.create(:user_id => 1, :group => '19', :forecast1 => 'BRA', :forecast2 => 'CHI')
 Forecast.create(:user_id => 1, :group => 'A', :forecast1 => '2', :forecast2 => '2')
@@ -308,3 +315,26 @@ Forecast.create(:user_id => 21, :group => 'F', :forecast1 => '0', :forecast2 => 
 Forecast.create(:user_id => 21, :group => 'G', :forecast1 => '1', :forecast2 => '1')
 Forecast.create(:user_id => 21, :group => 'H', :forecast1 => '2', :forecast2 => '2')#
 =end
+require 'csv'
+csv_data = CSV.read File.expand_path("../csv_data.csv", __FILE__)
+csv_matches = CSV.read File.expand_path("../csv_matches.csv", __FILE__)
+
+matches = csv_matches.map {|i| i[0].to_s }.each_slice(2)
+
+headers = csv_data.shift.map {|i| i.to_s }
+string_data = csv_data.map {|row| row.map {|cell| cell.to_s } }
+array_of_hashes = string_data.map {|row| Hash[*headers.zip(row).flatten] }
+
+headers.each {|h| 
+	puts "User: #{h}"
+	@user = User.where(name: h).first
+	array_of_hashes.each_slice(2).each_with_index{|match, i| 
+		@team1 = Setup.teams.key(matches.take(i+1).last[0])
+		@team2 = Setup.teams.key(matches.take(i+1).last[1])
+		game = Game.where(team1: @team1, team2: @team2).first
+		group = Setup.groups.select{|k,v| v.include?(@team1)}.each_key.peek
+
+		@user.forecasts.create(:group => group, :forecast1 => match[0][h], :forecast2 => match[1][h], :game_id => game.id)
+		p "Grupo: #{group} Partido: #{@team1} - #{@team2} -> #{match[0][h]} - #{match[1][h]}. Game class: #{game.id} #{game.class}" 
+	}
+}

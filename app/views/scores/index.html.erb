@@ -1,8 +1,8 @@
 <div class='col-lg-6'>
-  <h1>Resultados de <%=@scores.first.user.name.capitalize unless @scores.blank?%></h1> 
+  <h1>Resultados de <%=name%></h1> 
 </div>
 <div class='col-lg-6'>
-  <h3><%= link_to "Volver", results_path  %></h3> 
+  <h3><%= link_to "Volver", type_of_bet=="1" ? results_path : excel_path %></h3> 
 </div>
 
 <div class="well">
@@ -25,5 +25,5 @@
       <% end %>
     </tbody>
   </table>   
-  <h2> <p>Total Puntos: <strong><%= @scores.blank? ? 0 : Score.grab_sum_per_user(@scores.first.user_id)%></strong></p></h2>   
+  <h2> <p>Total Puntos: <strong><%= @scores.blank? ? 0 : Score.grab_sum_per_user(@scores.first.user_id,type_of_bet)%></strong></p></h2>   
 </div>

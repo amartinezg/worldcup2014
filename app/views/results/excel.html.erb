@@ -1,4 +1,4 @@
-<h1>Y quién va ganando en la polla de la suerte?</h1>
+<h1>Y quién va ganando en la polla de Excel?</h1>
 
 <div class="well">
   <table class="table table-striped table-hover ">
@@ -13,8 +13,8 @@
       <% @results.each_with_index do |user,i| %>
         <tr class=<%= "success" if i==0%>>
           <td><%= i+1 %></td>
-          <td><%= link_to "#{user.name}", user_scores_path(user)  %></td>
-          <td><%= user.score_sum %></td>
+          <td><%= link_to "#{user.name}", user_scores_excel_path(user)  %></td>
+          <td><%= user.score_sum2 %></td>
         </tr>
       <% end %>
     </tbody>

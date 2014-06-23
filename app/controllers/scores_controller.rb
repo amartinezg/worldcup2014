@@ -4,7 +4,13 @@ class ScoresController < ApplicationController
   # GET /scores
   # GET /scores.json
   def index
-    @scores = User.find(params[:user_id]).scores
+    @scores = User.find(params[:user_id]).scores.where(:type_of_bet => 1)
+    render "scores/index", locals: {type_of_bet: "1", name: @scores.first.user.name}
+  end
+
+  def excel
+    @scores = User.find(params[:user_id]).scores.where(:type_of_bet => 2)
+    render "scores/index", locals: {type_of_bet: "2", name: @scores.first.user.name}
   end
 
   # GET /scores/1

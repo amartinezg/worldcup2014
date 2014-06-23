@@ -4,17 +4,24 @@ class User < ActiveRecord::Base
 
 	attr_accessible :name, :mail
 
-	def self.prepare_mail
-		@user = User.all.sort_by(&:score_sum).reverse
+	def self.prepare_mail(type_of_bet)
+
+		if(type_of_bet)
+			logger.debug "Usuarios polla de la suerte"
+			@user = User.all.sort_by(&:score_sum).reverse.reject{|u| u.forecasts.where(game_id:nil).size==0}
+		else
+			logger.debug "Usuarios polla Excel"
+			@user = User.all.sort_by(&:score_sum2).reverse.reject{|u| u.forecasts.where.not(game_id:nil).size==0}
+		end
 
 		@user.each_with_index do |u,i|
 			logger.debug "Procesando a #{u.name} - mail: #{u.mail}"
-			# UserMailer.send_results(u,i+1,u.score_sum).deliver unless u.mail.blank?
+			#UserMailer.send_results(u,i+1,u.score_sum,type_of_bet).deliver unless u.mail.blank?
 		end
 	end
 
 	def score_sum
-		scores.sum(:points)
+		scores.where(:type_of_bet => 1).sum(:points)
 	end
 
 	def score_sum2

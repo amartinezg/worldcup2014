@@ -1,11 +1,13 @@
 Worldcup2014::Application.routes.draw do
   get "pages/rules"
   get 'results', to: 'results#index'
+  get 'excel', to: 'results#excel'
   
   resources :forecasts
 
   resources :users do
     resources :scores
+    get 'scores_excel', to: 'scores#excel'
   end
 
   # The priority is based upon order of creation: first created -> highest priority.

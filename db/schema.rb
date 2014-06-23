@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20140619015125) do
+ActiveRecord::Schema.define(version: 20140619034903) do
 
   create_table "forecasts", force: true do |t|
     t.string   "group"
@@ -20,19 +20,21 @@ ActiveRecord::Schema.define(version: 20140619015125) do
     t.integer  "user_id"
     t.datetime "created_at"
     t.datetime "updated_at"
+    t.integer  "game_id"
   end
 
   create_table "games", force: true do |t|
-    t.string   "team1",      limit: 3
-    t.string   "team2",      limit: 3
+    t.string   "team1",           limit: 3
+    t.string   "team2",           limit: 3
     t.date     "play_at"
-    t.string   "score1",     limit: 1
-    t.string   "score2",     limit: 1
-    t.string   "result",     limit: 1
+    t.string   "score1",          limit: 1
+    t.string   "score2",          limit: 1
+    t.string   "result",          limit: 1
     t.boolean  "processed"
     t.datetime "created_at"
     t.datetime "updated_at"
     t.integer  "round"
+    t.boolean  "processed_excel"
   end
 
   create_table "scores", force: true do |t|
@@ -42,6 +44,7 @@ ActiveRecord::Schema.define(version: 20140619015125) do
     t.integer  "forecast_id"
     t.datetime "created_at"
     t.datetime "updated_at"
+    t.integer  "type_of_bet"
   end
 
   create_table "setup", force: true do |t|

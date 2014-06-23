@@ -2,7 +2,7 @@ class Score < ActiveRecord::Base
 	belongs_to :user
 	belongs_to :forecast
 
-	attr_accessible :user_id, :forecast_id, :points, :reason
+	attr_accessible :user_id, :forecast_id, :points, :reason, :type_of_bet
 
 	def self.calculate_results_per_day(date)
 
@@ -14,7 +14,7 @@ class Score < ActiveRecord::Base
 
 			@group = Setup.groups.select{|k,v| v.include?(game["team1"])}.each_key.peek
 
-			@forecasts = game.round <= 15 ? Forecast.all.where(group: "#{@group}") : game.round
+			@forecasts = game.round <= 15 ? Forecast.all.where(group: "#{@group}", game_id: nil) : game.round
 
 			@forecasts.each do |f|
 	  		if game.round <= 15
@@ -36,7 +36,7 @@ class Score < ActiveRecord::Base
 				Rails.logger.info("#{f.user.name}: #{f.forecast1} - #{f.forecast2}. Points: #{@points}")
 
 				Score.create(:user_id => f.user_id, :forecast_id => f.id, :points => @points, 
-					:reason => @reason)
+					:reason => @reason, :type_of_bet => 1)
 
 				if(game.round == 20 && sum_last_two_matches(f.user_id)==0)
 					last_two_forecasts = Forecast.where(group: [19,20], user_id: f.user_id)
@@ -53,16 +53,41 @@ class Score < ActiveRecord::Base
 				end
 			end
 			game.update(processed: true)
-			User.prepare_mail
 		end
+		User.prepare_mail(true)
+	end
+
+	def self.calculate_results_per_day_excel(date)
+		games = Game.get_games_per_day_excel(date)
+		games.each do |game|
+			Rails.logger.info("#{game["team1"]} vs #{game["team2"]}: #{game["score1"]} - #{game["score2"]}")
+			p "#{game["team1"]} vs #{game["team2"]}: #{game["score1"]} - #{game["score2"]}"
+
+			@forecasts = Forecast.all.where(game_id: "#{game.id}")
+
+			@forecasts.each do |f|
+				forecast_winner = find_winner(f.forecast1.to_i,f.forecast2.to_i)
+		  	result_winner = game.result.to_s
+
+		  	@points = game["score1"]==f.forecast1 && game["score2"]==f.forecast2 ? 5 : (forecast_winner==result_winner ? 2 : 0)
+
+				@reason = "Partido: #{Setup.teams[game["team1"]]} vs #{Setup.teams[game["team2"]]}. Resultado: #{game["score1"]} - #{game["score2"]}"
+		  	
+		  	Score.create(:user_id => f.user_id, :forecast_id => f.id, :points => @points, 
+					:reason => @reason, :type_of_bet => 2)
+
+		  	game.update(processed_excel: true)
+			end
+		end
+		User.prepare_mail(false)
 	end
 
 	def self.find_winner(score1,score2)
 		(score1==score2) ? 'D' : ((score1>score2) ? 'L' : 'V')
 	end
 
-	def self.grab_sum_per_user(user_id)
-		Score.where(user_id: user_id).sum(:points)
+	def self.grab_sum_per_user(user_id,type_of_bet)
+		Score.where(user_id: user_id).where(:type_of_bet => type_of_bet).sum(:points)
 	end
 
 	def self.sum_last_two_matches(user)

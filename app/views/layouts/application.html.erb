@@ -25,6 +25,9 @@
       <li class="<%= 'active' if current_page?('/results')%>">
       	<%= link_to "Resultados Polla Suerte", results_path  %>
       </li>
+      <li class="<%= 'active' if current_page?('/excel')%>">
+        <%= link_to "Resultados Polla Excel", excel_path  %>
+      </li>
       <li class="<%= 'active' if current_page?('/users')%>">
       	<%= link_to "Usuarios", users_path  %>
       </li>

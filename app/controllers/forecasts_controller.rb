@@ -4,7 +4,7 @@ class ForecastsController < ApplicationController
   # GET /forecasts
   # GET /forecasts.json
   def index
-    @forecasts = Forecast.all.order("user_id")
+    @forecasts = Forecast.all.where(game_id: nil).order("user_id")
   end
 
   # GET /forecasts/1
