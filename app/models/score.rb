@@ -93,4 +93,3 @@ class Score < ActiveRecord::Base
 		Score.where(created_at: (Time.now.midnight - 1.day)..Time.now, user_id: user).sum(:points)
 	end
 end
-game.update(processed_excel: true)
