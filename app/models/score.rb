@@ -53,8 +53,8 @@ class Score < ActiveRecord::Base
 				end
 			end
 			game.update(processed: true)
+			User.prepare_mail(true)
 		end
-		User.prepare_mail(true)
 	end
 
 	def self.calculate_results_per_day_excel(date)
@@ -75,11 +75,10 @@ class Score < ActiveRecord::Base
 		  	
 		  	Score.create(:user_id => f.user_id, :forecast_id => f.id, :points => @points, 
 					:reason => @reason, :type_of_bet => 2)
-
-		  	game.update(processed_excel: true)
 			end
+			game.update(processed_excel: true)
+			User.prepare_mail(false)
 		end
-		User.prepare_mail(false)
 	end
 
 	def self.find_winner(score1,score2)
@@ -94,3 +93,4 @@ class Score < ActiveRecord::Base
 		Score.where(created_at: (Time.now.midnight - 1.day)..Time.now, user_id: user).sum(:points)
 	end
 end
+game.update(processed_excel: true)
