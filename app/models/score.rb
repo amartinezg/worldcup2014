@@ -91,7 +91,7 @@ class Score < ActiveRecord::Base
 				@reason = "No obtuviste puntos con #{Setup.teams[f.forecast1]} o #{Setup.teams[f.forecast2]} en los primeros 4 lugares."
 			end
 
-			#Score.create(:user_id => f.user_id, :forecast_id => f.id, :points => @points, :reason => @reason, :type_of_bet => 1)
+			Score.create(:user_id => f.user_id, :forecast_id => f.id, :points => @points, :reason => @reason, :type_of_bet => 1)
 		end
 	end
 
